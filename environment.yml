@@ -1,0 +1,9 @@
+name: cutesv-env
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+
+dependencies:
+  - samtools
+  - deeptools
