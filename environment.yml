@@ -1,4 +1,4 @@
-name: cutesv-env
+name: ttseq-env
 channels:
   - bioconda
   - conda-forge
