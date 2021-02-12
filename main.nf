@@ -6,32 +6,33 @@ from https://github.com/crickbabs/DRB_TT-seq/blob/master/bigwig.md
 
 
 params.scale_factor=1
+params.threads=1
 
 log.info """\
          bigwig - N F   P I P E L I N E
          ===================================
-         bam          : ${params.bam}
+         bams          : ${params.bam}
          scale_factor : ${params.scale_factor}
          """
          .stripIndent()
 
 Channel
-         .fromFilePairs(params.bam) {file -> file.name.replaceAll(/.bam|.bai$/,'')}.
+         .fromFilePairs(params.bams) {file -> file.name.replaceAll(/.bam|.bai$/,'')}
           .into{ bam_ch; bam_rev_ch; bam_for_ch}
 
 //Create bigwig file for all reads.
 process bigwig_all {
- label: "bigwig_all"
+ label "bigwig_all"
  tag "${sampleID} bigwig_all"
  conda  "environment.yml"
- publishDir "results/bigwig" , mode: 'copy',
+ publishDir "results/bigwig" , mode: 'copy'
  cpus params.threads
 
  input:
  tuple(val(sampleID),path(bam)) from bam_ch
 
  output:
- path("${sampleID}.bigwig") into out
+ path("${sampleID}.bigwig") into all_out
 
  script:
  """
@@ -52,16 +53,16 @@ Exclude reads that are mapped to the reverse strand (16) and
 */
 //Create bigwig file for all reads.
 process bigwig_forward {
- label: "bigwig_forward"
+ label "bigwig_forward"
  conda  "environment.yml"
- publishDir "results/bigwig" , mode: 'copy',
+ publishDir "results/bigwig" , mode: 'copy'
  cpus params.threads
 
  input:
  tuple(val(sampleID),path(bam)) from bam_for_ch
 
  output:
- path("${sampleID}.bigwig") into out
+ path("${sampleID}.bigwig") into for_out
 
  script:
  """
@@ -83,16 +84,16 @@ Include reads that are first in a pair (64), but exclude those ones that map to 
 */
 //Create bigwig file for all reads.
 process bigwig_reverse {
- label: "bigwig_reverse"
+ label "bigwig_reverse"
  conda  "environment.yml"
- publishDir "results/bigwig" , mode: 'copy',
+ publishDir "results/bigwig" , mode: 'copy'
  cpus params.threads
 
  input:
  tuple(val(sampleID),path(bam)) from bam_rev_ch
 
  output:
- path("${sampleID}.bigwig") into out
+ path("${sampleID}.bigwig") into rev_out
 
  script:
  """
