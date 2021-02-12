@@ -13,7 +13,6 @@ log.info """\
          ===================================
          bams           : ${params.bams}
          scale_factor   : ${params.scale_factor}
-         threads        : ${params.threads}
          """
          .stripIndent()
 
