@@ -6,7 +6,6 @@ from https://github.com/crickbabs/DRB_TT-seq/blob/master/bigwig.md
 
 
 params.scale_factor=1
-params.threads=1
 params.bams="*.bam"
 
 log.info """\
@@ -24,11 +23,11 @@ Channel
 
 //Create bigwig file for all reads.
 process bigwig_all {
- label "bigwig_all"
+ label "bigwig"
  tag "${sampleID} bigwig_all"
  conda  "$baseDir/environment.yml"
  publishDir "results/bigwig" , mode: 'copy'
- cpus params.threads
+
 
  input:
  tuple(val(sampleID),path(bam)) from bam_ch
@@ -56,10 +55,10 @@ Exclude reads that are mapped to the reverse strand (16) and
 */
 //Create bigwig file for all reads.
 process bigwig_forward {
- label "bigwig_forward"
+ label "bigwig"
  conda  "$baseDir/environment.yml"
  publishDir "results/bigwig" , mode: 'copy'
- cpus params.threads
+
 
  input:
  tuple(val(sampleID),path(bam)) from bam_for_ch
@@ -88,10 +87,10 @@ Include reads that are first in a pair (64), but exclude those ones that map to 
 */
 //Create bigwig file for all reads.
 process bigwig_reverse {
- label "bigwig_reverse"
+ label "bigwig"
  conda  "$baseDir/environment.yml"
  publishDir "results/bigwig" , mode: 'copy'
- cpus params.threads
+
 
  input:
  tuple(val(sampleID),path(bam)) from bam_rev_ch
