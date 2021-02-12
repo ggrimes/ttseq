@@ -12,7 +12,7 @@ params.bams="*.bam"
 log.info """\
          bigwig - N F   P I P E L I N E
          ===================================
-         bams           : ${params.bam}
+         bams           : ${params.bams}
          scale_factor   : ${params.scale_factor}
          threads        : ${params.threads}
          """
