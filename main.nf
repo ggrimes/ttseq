@@ -7,12 +7,14 @@ from https://github.com/crickbabs/DRB_TT-seq/blob/master/bigwig.md
 
 params.scale_factor=1
 params.threads=1
+params.bams="*.bam"
 
 log.info """\
          bigwig - N F   P I P E L I N E
          ===================================
-         bams          : ${params.bam}
-         scale_factor : ${params.scale_factor}
+         bams           : ${params.bam}
+         scale_factor   : ${params.scale_factor}
+         threads        : ${params.threads}
          """
          .stripIndent()
 
@@ -36,6 +38,7 @@ process bigwig_all {
 
  script:
  """
+ samtools index ${bam}
  bamCoverage --scaleFactor ${params.scale_factor} \
  -p ${task.cpus}  \
  -b ${bam} \
@@ -62,15 +65,16 @@ process bigwig_forward {
  tuple(val(sampleID),path(bam)) from bam_for_ch
 
  output:
- path("${sampleID}.bigwig") into for_out
+ path("${sampleID}_forward.bigwig") into for_out
 
  script:
  """
+ samtools index ${bam}
  samtools view -b -f 128 -F 16 --threads ${task.cpus} ${bam} > ${sampleID}"_FOR1.bam"
  samtools view -b -f 80  --threads ${task.cpus} ${bam} > ${sampleID}"_FOR2.bam"
  samtools merge --threads ${task.cpus} -f ${sampleID}"_FOR.bam" ${sampleID}"_FOR1.bam" ${sampleID}"_FOR2.bam"
  samtools index ${sampleID}"_FOR.bam"
- bamCoverage --scaleFactor ${params.scale_factor} -p ${task.cpus} -b ${sampleID}"_FOR.bam" -o ${sampleID}"_reverse.bigwig"
+ bamCoverage --scaleFactor ${params.scale_factor} -p ${task.cpus} -b ${sampleID}"_FOR.bam" -o ${sampleID}"_forward.bigwig"
  """
 }
 
@@ -93,10 +97,11 @@ process bigwig_reverse {
  tuple(val(sampleID),path(bam)) from bam_rev_ch
 
  output:
- path("${sampleID}.bigwig") into rev_out
+ path("${sampleID}_reverse.bigwig") into rev_out
 
  script:
  """
+ samtools index ${bam}
  samtools view -b -f 144 --threads ${task.cpus} ${bam} > ${sampleID}"_REV1.bam"
  samtools view -b -f 64 -F 16 --threads ${task.cpus} ${bam} > ${sampleID}"_REV2.bam"
  samtools merge --threads ${task.cpus} -f ${sampleID}"_REV.bam" ${sampleID}"_REV1.bam" ${sampleID}"_REV2.bam"
