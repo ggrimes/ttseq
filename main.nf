@@ -1,5 +1,6 @@
 /*
-This bash script provides a means of generating scaled strand-specific BIGWIG files from a BAM file containing paired reads.
+This bash script provides a means of generating scaled strand-specific BIGWIG files
+from a BAM file containing paired reads.
 from https://github.com/crickbabs/DRB_TT-seq/blob/master/bigwig.md
 */
 
@@ -27,7 +28,7 @@ process bigwig_all {
  cpus params.threads
 
  input:
-tuple(val(sampleID),path(bam)) from bam_ch
+ tuple(val(sampleID),path(bam)) from bam_ch
 
  output:
  path("${sampleID}.bigwig") into out
@@ -43,8 +44,11 @@ tuple(val(sampleID),path(bam)) from bam_ch
 
 /*
 Get file for transcripts originating on the forward strand.
-Include reads that are 2nd in a pair (128). Exclude reads that are mapped to the reverse strand (16)
-Exclude reads that are mapped to the reverse strand (16) and first in a pair (64): 64 + 16 = 80
+Include reads that are 2nd in a pair (128).
+Exclude reads that are mapped to the reverse strand (16)
+
+Exclude reads that are mapped to the reverse strand (16) and
+ first in a pair (64): 64 + 16 = 80
 */
 //Create bigwig file for all reads.
 process bigwig_forward {
@@ -65,7 +69,7 @@ process bigwig_forward {
  samtools view -b -f 80  --threads ${task.cpus} ${bam} > ${sampleID}"_FOR2.bam"
  samtools merge --threads ${task.cpus} -f ${sampleID}"_FOR.bam" ${sampleID}"_FOR1.bam" ${sampleID}"_FOR2.bam"
  samtools index ${sampleID}"_FOR.bam"
- bamCoverage --scaleFactor ${params.scale_factor} -p ${task.cpus} -b ${sampleID}"_REV.bam" -o ${sampleID}"_reverse.bigwig"
+ bamCoverage --scaleFactor ${params.scale_factor} -p ${task.cpus} -b ${sampleID}"_FOR.bam" -o ${sampleID}"_reverse.bigwig"
  """
 }
 
