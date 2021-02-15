@@ -6,3 +6,4 @@
 *.nextflow*
 work*
 results*
+*.bam
