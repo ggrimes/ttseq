@@ -25,7 +25,7 @@ workflow  {
   channel.fromFilePairs(params.bams) {file -> file.name.replaceAll(/.bam|.bai$/,'')}.set{ bam_ch}
   bam_ch.view()
   bigwig_all(bam_ch)
-  //bigwig_forward(bam_ch)
-  //bigwig_reverse(bam_ch)
+  bigwig_forward(bam_ch)
+  bigwig_reverse(bam_ch)
 
 }
