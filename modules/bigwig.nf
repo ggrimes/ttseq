@@ -7,12 +7,13 @@ process bigwig_all {
 
 
  input:
- tuple(val(sampleID),path(bam))
+ path(bam)
 
  output:
  path("${sampleID}.bigwig")
 
  script:
+ sampleID=bam.baseName
  """
  samtools index ${bam}
  bamCoverage --scaleFactor ${params.scale_factor} \
@@ -39,12 +40,13 @@ process bigwig_forward {
 
 
  input:
- tuple(val(sampleID),path(bam))
+ path(bam)
 
  output:
  path("${sampleID}_forward.bigwig")
 
  script:
+ sampleID=bam.baseName
  """
  samtools index ${bam}
  samtools view -b -f 128 -F 16 --threads ${task.cpus} ${bam} > ${sampleID}"_FOR1.bam"
@@ -72,12 +74,13 @@ process bigwig_reverse {
 
 
  input:
- tuple(val(sampleID),path(bam))
+ path(bam)
 
  output:
  path("${sampleID}_reverse.bigwig")
 
  script:
+ sampleID=bam.baseName
  """
  samtools index ${bam}
  samtools view -b -f 144 --threads ${task.cpus} ${bam} > ${sampleID}"_REV1.bam"

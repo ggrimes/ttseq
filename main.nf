@@ -19,10 +19,10 @@ log.info """\
 
 
 include { bigwig_all; bigwig_forward;bigwig_reverse } from './modules/bigwig.nf'
-
+channel.fromPath(params.bams).set{ bam_ch}
 
 workflow  {
-  channel.fromFilePairs(params.bams) {file -> file.name.replaceAll(/.bam|.bai$/,'')}.set{ bam_ch}
+
   bam_ch.view()
   bigwig_all(bam_ch)
   bigwig_forward(bam_ch)
