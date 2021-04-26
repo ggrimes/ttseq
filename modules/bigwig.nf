@@ -34,7 +34,7 @@ Exclude reads that are mapped to the reverse strand (16) and
 //Create bigwig file for all reads.
 process bigwig_forward {
  label "bigwig"
- tag "${sampleID} bigwig_all"
+ tag "${sampleID} bigwig_forward"
  conda  "$baseDir/environment.yml"
  publishDir "results/bigwig" , mode: 'copy'
 
@@ -68,7 +68,7 @@ Include reads that are first in a pair (64), but exclude those ones that map to 
 //Create bigwig file for all reads.
 process bigwig_reverse {
  label "bigwig"
- tag "${sampleID} bigwig_all"
+ tag "${sampleID} bigwig_reverse"
  conda  "$baseDir/environment.yml"
  publishDir "results/bigwig" , mode: 'copy'
 
